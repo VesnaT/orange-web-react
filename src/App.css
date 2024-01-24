@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -35,4 +35,23 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.canvas {
+  margin: 20px;
+  border: 1px solid grey;
+  width: 800px;
+  height: 500px;
+  position: relative;
+}
+
+nav {
+  background: #0f4a8a;
+  padding: 20px;
+}
+nav a {
+  color: #edefee;
+  text-decoration: none;
+  font-size: 20px;
+  margin-right: 20px;
 }
