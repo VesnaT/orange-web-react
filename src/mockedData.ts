@@ -9,8 +9,8 @@ export const Workflows = [
   {
     workflowIDx: "Bar",
     nodes: [
-      { id: 0, x: 200, y: 320, fill: "red" },
-      { id: 1, x: 200, y: 120, fill: "yellow" },
+      { id: 0, x: 200, y: 320, fill: "#8bc34a" },
+      { id: 1, x: 200, y: 120, fill: "#ff9800" },
     ],
   },
   {

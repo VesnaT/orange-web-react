@@ -55,3 +55,28 @@ nav a {
   font-size: 20px;
   margin-right: 20px;
 }
+
+.picker {
+  border: 2px solid #333;
+  background: #fff;
+  border-radius: 7px;
+  cursor: default;
+  display: flex;
+  flex-wrap: wrap;
+  width: 204px;
+  padding: 10px;
+}
+
+.picker-circle {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  margin: 3px;
+}
+
+.picker-circle:hover {
+  width: 32px;
+  height: 32px;
+  margin: 1px;
+}

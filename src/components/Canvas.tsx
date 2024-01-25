@@ -1,5 +1,6 @@
 import React from "react";
 import Node, { radius } from "./Node";
+import { COLORS } from "../utils/colors";
 
 export default function Canvas({ workflow }: any) {
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -18,7 +19,7 @@ export default function Canvas({ workflow }: any) {
           id: workflow_.nodes.length + 1,
           x: event.clientX - rect.x - radius,
           y: event.clientY - rect.y - radius,
-          fill: "#3f51b5",
+          fill: COLORS[workflow_.nodes.length % COLORS.length],
         },
       ],
     });
