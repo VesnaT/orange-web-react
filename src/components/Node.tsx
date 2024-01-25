@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
-
-export const radius = 56;
+import DraggableCircle from "./DraggableCircle";
 
 function Node({ x, y, fill }: any) {
   const [color, setColor] = useState(fill);
@@ -27,15 +26,7 @@ function Node({ x, y, fill }: any) {
         setIsEditing(true);
       }}
     >
-      <svg
-        viewBox={`0 0 ${radius * 2} ${radius * 2}`}
-        xmlns="http://www.w3.org/2000/svg"
-        width={radius * 2}
-        height={radius * 2}
-        style={{ position: "absolute", left: x, top: y }}
-      >
-        <circle cx={radius} cy={radius} r={radius} fill={color} />
-      </svg>
+      <DraggableCircle x={x} y={y} fill={color} />
       {isEditing && (
         <div>
           <ColorPicker selectedColor={color} callback={setColor} />
