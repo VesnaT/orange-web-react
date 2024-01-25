@@ -22,8 +22,8 @@ function Node({ x, y, fill }: any) {
 
   return (
     <div
-      onContextMenu={(e) => {
-        e.preventDefault(); // prevent the default behaviour when right clicked
+      onClick={(e) => {
+        e.stopPropagation();
         setIsEditing(true);
       }}
     >
