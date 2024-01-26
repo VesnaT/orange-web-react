@@ -31,6 +31,9 @@ const ColorPicker = ({ selectedColor, callback }: any) => {
       onClick={(e) => {
         e.stopPropagation();
       }}
+      onMouseUp={(e) => {
+        e.stopPropagation();
+      }}
     >
       {COLORS.map((c) => (
         <Circle

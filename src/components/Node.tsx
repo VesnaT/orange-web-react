@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
 export const RADIUS = 56;
 
-function Node({ x, y, fill }: any) {
+function Node({ x, y, fill, isDraggingSetter }: any) {
   const [color, setColor] = useState(fill);
   const [isEditing, setIsEditing] = useState(false);
   const [draggableState, setDraggableState] = useState({
@@ -20,6 +20,7 @@ function Node({ x, y, fill }: any) {
       screenX: e.screenX,
       screenY: e.screenY,
     });
+    isDraggingSetter(true);
   };
   const handleMouseMove = (e: any) => {
     if (draggableState.isDown) {
@@ -35,17 +36,14 @@ function Node({ x, y, fill }: any) {
     }
   };
   const handleMouseUp = (e: any) => {
-    setDraggableState({
-      ...draggableState,
-      isDown: false,
-      screenX: 0,
-      screenY: 0,
-    });
-  };
-
-  const handleClick = (e: any) => {
-    e.stopPropagation();
-    setIsEditing(true);
+    if (draggableState.isDown) {
+      setDraggableState({
+        ...draggableState,
+        isDown: false,
+        screenX: 0,
+        screenY: 0,
+      });
+    }
   };
 
   const escFunction = useCallback((event: any) => {
@@ -63,11 +61,7 @@ function Node({ x, y, fill }: any) {
 
   return (
     <div>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
+      <div>
         <svg
           viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -90,6 +84,7 @@ function Node({ x, y, fill }: any) {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           />
           <rect
             style={{
@@ -99,7 +94,13 @@ function Node({ x, y, fill }: any) {
             x="3"
             width="13"
             height="13"
-            onClick={handleClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditing(true);
+            }}
+            onMouseUp={(e) => {
+              e.stopPropagation();
+            }}
           />
         </svg>
       </div>

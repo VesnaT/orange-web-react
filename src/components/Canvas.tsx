@@ -5,13 +5,20 @@ import { RADIUS } from "./Node";
 
 export default function Canvas({ workflow }: any) {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [workflow_, setWorkflow_] = useState<any>(workflow);
   if (!workflow_) {
     return <div>Workflow not found</div>;
   }
 
-  function handleClick(event: React.MouseEvent<any, MouseEvent>) {
+  const handleMouseUp = (event: React.MouseEvent<any, MouseEvent>) => {
+    if (isDragging) {
+      setIsDragging(false);
+      return;
+    }
+
     const rect = canvasRef.current!.getBoundingClientRect();
+    setIsDragging(false);
     setWorkflow_({
       ...workflow_,
       nodes: [
@@ -24,12 +31,18 @@ export default function Canvas({ workflow }: any) {
         },
       ],
     });
-  }
+  };
   return (
     <div>
-      <div className="canvas" ref={canvasRef} onClick={handleClick}>
+      <div className="canvas" ref={canvasRef} onMouseUp={handleMouseUp}>
         {workflow_.nodes.map((node: any) => (
-          <Node key={node.id} x={node.x} y={node.y} fill={node.fill} />
+          <Node
+            key={node.id}
+            x={node.x}
+            y={node.y}
+            fill={node.fill}
+            isDraggingSetter={setIsDragging}
+          />
         ))}
       </div>
     </div>
