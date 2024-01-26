@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 export const radius = 56;
 
-export default function DraggableCircle({ x, y, fill }: any) {
+export default function DraggableNode({ x, y, fill, cb }: any) {
   const [state, setState] = useState({
     isDown: false,
     posX: x,
@@ -40,23 +40,35 @@ export default function DraggableCircle({ x, y, fill }: any) {
     });
   };
 
+  const handleClick = (e: any) => {
+    e.stopPropagation();
+    cb(true);
+  };
+
   return (
-    <svg
-      viewBox={`0 0 ${radius * 2} ${radius * 2}`}
-      xmlns="http://www.w3.org/2000/svg"
-      width={radius * 2}
-      height={radius * 2}
-      style={{ position: "absolute", left: state.posX, top: state.posY }}
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
-      <circle
-        cx={radius}
-        cy={radius}
-        r={radius}
-        fill={fill}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-      />
-    </svg>
+      <svg
+        viewBox={`0 0 ${radius * 2} ${radius * 2}`}
+        xmlns="http://www.w3.org/2000/svg"
+        width={radius * 2}
+        height={radius * 2}
+        style={{ position: "absolute", left: state.posX, top: state.posY }}
+      >
+        <circle
+          cx={radius}
+          cy={radius}
+          r={radius}
+          fill={fill}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+        />
+        <rect y="3" x="3" width="13" height="13" onClick={handleClick} />
+      </svg>
+    </div>
   );
 }

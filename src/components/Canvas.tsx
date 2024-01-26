@@ -1,7 +1,7 @@
 import React from "react";
 import Node from "./Node";
 import { COLORS } from "../utils/colors";
-import { radius } from "./DraggableCircle";
+import { radius } from "./DraggableNode";
 
 export default function Canvas({ workflow }: any) {
   const canvasRef = React.useRef<HTMLDivElement>(null);

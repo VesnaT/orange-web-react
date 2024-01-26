@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
-import DraggableCircle from "./DraggableCircle";
+import DraggableNode from "./DraggableNode";
 
 function Node({ x, y, fill }: any) {
   const [color, setColor] = useState(fill);
@@ -20,18 +20,9 @@ function Node({ x, y, fill }: any) {
   }, [escFunction]);
 
   return (
-    <div
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsEditing(true);
-      }}
-    >
-      <DraggableCircle x={x} y={y} fill={color} />
-      {isEditing && (
-        <div>
-          <ColorPicker selectedColor={color} callback={setColor} />
-        </div>
-      )}
+    <div>
+      <DraggableNode x={x} y={y} fill={color} cb={setIsEditing} />
+      {isEditing && <ColorPicker selectedColor={color} callback={setColor} />}
     </div>
   );
 }
