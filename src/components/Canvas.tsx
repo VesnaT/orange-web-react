@@ -1,7 +1,7 @@
 import React from "react";
 import Node from "./Node";
 import { COLORS } from "../utils/colors";
-import { radius } from "./DraggableNode";
+import { RADIUS } from "./Node";
 
 export default function Canvas({ workflow }: any) {
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -18,8 +18,8 @@ export default function Canvas({ workflow }: any) {
         ...workflow_.nodes,
         {
           id: workflow_.nodes.length + 1,
-          x: event.clientX - rect.x - radius,
-          y: event.clientY - rect.y - radius,
+          x: event.clientX - rect.x - RADIUS,
+          y: event.clientY - rect.y - RADIUS,
           fill: COLORS[workflow_.nodes.length % COLORS.length],
         },
       ],
