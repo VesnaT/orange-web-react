@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import Node from "./Node";
 import { COLORS } from "../utils/colors";
 import { RADIUS } from "./Node";
 
 export default function Canvas({ workflow }: any) {
-  const canvasRef = React.useRef<HTMLDivElement>(null);
-  const [workflow_, setWorkflow_] = React.useState<any>(workflow);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const [workflow_, setWorkflow_] = useState<any>(workflow);
   if (!workflow_) {
     return <div>Workflow not found</div>;
   }

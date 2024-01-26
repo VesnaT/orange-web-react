@@ -1,11 +1,11 @@
 import Canvas from "./Canvas";
 import { useParams } from "react-router-dom";
 import { Workflows } from "../mockedData";
-import React from "react";
+import { useState } from "react";
 
 export default function Orange() {
   const params = useParams();
-  const [workflows, setWorkflows] = React.useState<any>(Workflows);
+  const [workflows, setWorkflows] = useState<any>(Workflows);
 
   return (
     <div>
