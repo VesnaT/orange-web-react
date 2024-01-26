@@ -80,6 +80,9 @@ function Node({ x, y, fill }: any) {
           }}
         >
           <circle
+            style={{
+              cursor: "move",
+            }}
             cx={RADIUS}
             cy={RADIUS}
             r={RADIUS}
@@ -88,7 +91,16 @@ function Node({ x, y, fill }: any) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
           />
-          <rect y="3" x="3" width="13" height="13" onClick={handleClick} />
+          <rect
+            style={{
+              cursor: "pointer",
+            }}
+            y="3"
+            x="3"
+            width="13"
+            height="13"
+            onClick={handleClick}
+          />
         </svg>
       </div>
       {isEditing && <ColorPicker selectedColor={color} callback={setColor} />}
