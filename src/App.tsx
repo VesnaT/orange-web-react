@@ -6,7 +6,7 @@ import Home from "./components/Home";
 import { Workflows } from "./mockedData";
 
 function App() {
-  const workflowIDs = Workflows.map((w) => w.workflowIDx);
+  const workflowIDs = Workflows.map((w) => w.workflowID);
   return (
     <div className="App">
       <nav className="nav">

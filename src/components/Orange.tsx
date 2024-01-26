@@ -10,7 +10,7 @@ export default function Orange() {
   return (
     <div>
       <Canvas
-        workflow={workflows.find((w: any) => w.workflowIDx === params.id)}
+        workflow={workflows.find((w: any) => w.workflowID === params.id)}
       />
     </div>
   );
