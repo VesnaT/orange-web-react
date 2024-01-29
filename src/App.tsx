@@ -1,12 +1,20 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Link, Route, Routes } from "react-router-dom";
 import Orange from "./components/Orange";
 import Home from "./components/Home";
-import { Workflows } from "./mockedData";
+import { getWorkflows, WorkflowI } from "./api/workflows.api";
 
 function App() {
-  const workflowIDs = Workflows.map((w) => w.workflowID);
+  const [workflowIDs, setWorkflowIDs] = useState<string[]>([]);
+  const fetchWorkflowIDs = async () => {
+    const data = await getWorkflows();
+    setWorkflowIDs(data["workflows"].map((w: WorkflowI) => w.id));
+  };
+  useEffect(() => {
+    fetchWorkflowIDs();
+  }, []);
+
   return (
     <div className="App">
       <nav className="nav">

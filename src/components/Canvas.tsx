@@ -1,13 +1,23 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Node from "./Node";
 import { COLORS } from "../utils/colors";
 import { RADIUS } from "./Node";
+import { getWorkflows, NodeI, WorkflowI } from "../api/workflows.api";
 
-export default function Canvas({ workflow }: any) {
+export default function Canvas({ workflowID }: any) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [workflow_, setWorkflow_] = useState<any>(workflow);
-  if (!workflow_) {
+  const [workflow, setWorkflow] = useState<undefined | WorkflowI>(undefined);
+
+  const fetchWorkflow = async (wID: string) => {
+    const data = await getWorkflows();
+    setWorkflow(data["workflows"].find((w: WorkflowI) => w.id === wID));
+  };
+  useEffect(() => {
+    fetchWorkflow(workflowID);
+  }, [workflowID]);
+
+  if (!workflow) {
     return <div>Workflow not found</div>;
   }
 
@@ -19,15 +29,15 @@ export default function Canvas({ workflow }: any) {
 
     const rect = canvasRef.current!.getBoundingClientRect();
     setIsDragging(false);
-    setWorkflow_({
-      ...workflow_,
+    setWorkflow({
+      ...workflow,
       nodes: [
-        ...workflow_.nodes,
+        ...workflow.nodes,
         {
-          id: workflow_.nodes.length + 1,
+          id: workflow.nodes.length + 1,
           x: event.clientX - rect.x - RADIUS,
           y: event.clientY - rect.y - RADIUS,
-          fill: COLORS[workflow_.nodes.length % COLORS.length],
+          fill: COLORS[workflow.nodes.length % COLORS.length],
         },
       ],
     });
@@ -35,7 +45,7 @@ export default function Canvas({ workflow }: any) {
   return (
     <div>
       <div className="canvas" ref={canvasRef} onMouseUp={handleMouseUp}>
-        {workflow_.nodes.map((node: any) => (
+        {workflow.nodes.map((node: NodeI) => (
           <Node
             key={node.id}
             x={node.x}
