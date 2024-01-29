@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import Node from "./Node";
 import { COLORS } from "../utils/colors";
 import { RADIUS } from "./Node";
-import { getWorkflows, NodeI, WorkflowI } from "../api/workflows.api";
+import {
+  getWorkflows,
+  saveWorkflow,
+  NodeI,
+  WorkflowI,
+} from "../api/workflows.api";
 
 export default function Canvas({ workflowID }: any) {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -21,6 +26,40 @@ export default function Canvas({ workflowID }: any) {
     return <div>Workflow not found</div>;
   }
 
+  const addNode = (x: number, y: number) => {
+    const addedNodeWorkflow: WorkflowI = {
+      ...workflow,
+      nodes: [
+        ...workflow.nodes,
+        {
+          id: workflow.nodes.length + 1,
+          x: x,
+          y: y,
+          fill: COLORS[workflow.nodes.length % COLORS.length],
+        },
+      ],
+    };
+    setAndSaveWorkflow(addedNodeWorkflow);
+  };
+
+  const updateNode = ({ id, x, y, fill }: NodeI) => {
+    const updatedNodeWorkflow: WorkflowI = {
+      ...workflow,
+    };
+    updatedNodeWorkflow.nodes = updatedNodeWorkflow.nodes.map((node: NodeI) => {
+      if (node.id === id) {
+        return { id, x, y, fill };
+      }
+      return node;
+    });
+    setAndSaveWorkflow(updatedNodeWorkflow);
+  };
+
+  const setAndSaveWorkflow = (updatedWorkflow: WorkflowI) => {
+    setWorkflow(updatedWorkflow);
+    saveWorkflow(updatedWorkflow);
+  };
+
   const handleMouseUp = (event: React.MouseEvent<any, MouseEvent>) => {
     if (isDragging) {
       setIsDragging(false);
@@ -29,18 +68,7 @@ export default function Canvas({ workflowID }: any) {
 
     const rect = canvasRef.current!.getBoundingClientRect();
     setIsDragging(false);
-    setWorkflow({
-      ...workflow,
-      nodes: [
-        ...workflow.nodes,
-        {
-          id: workflow.nodes.length + 1,
-          x: event.clientX - rect.x - RADIUS,
-          y: event.clientY - rect.y - RADIUS,
-          fill: COLORS[workflow.nodes.length % COLORS.length],
-        },
-      ],
-    });
+    addNode(event.clientX - rect.x - RADIUS, event.clientY - rect.y - RADIUS);
   };
   return (
     <div>
@@ -48,10 +76,12 @@ export default function Canvas({ workflowID }: any) {
         {workflow.nodes.map((node: NodeI) => (
           <Node
             key={node.id}
+            id={node.id}
             x={node.x}
             y={node.y}
             fill={node.fill}
             isDraggingSetter={setIsDragging}
+            callback={updateNode}
           />
         ))}
       </div>

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
 export const RADIUS = 56;
 
-function Node({ x, y, fill, isDraggingSetter }: any) {
+function Node({ id, x, y, fill, isDraggingSetter, callback }: any) {
   const [color, setColor] = useState(fill);
   const [isEditing, setIsEditing] = useState(false);
   const [draggableState, setDraggableState] = useState({
@@ -12,6 +12,26 @@ function Node({ x, y, fill, isDraggingSetter }: any) {
     screenX: 0,
     screenY: 0,
   });
+
+  const setColorAndSave = (color_: string) => {
+    callback({
+      id: id,
+      x: draggableState.posX,
+      y: draggableState.posY,
+      fill: color_,
+    });
+    setColor(color_);
+  };
+
+  const setPosAndSave = (x_: number, y_: number) => {
+    callback({
+      id: id,
+      x: x_,
+      y: y_,
+      fill: color,
+    });
+    setColor(color);
+  };
 
   const handleMouseDown = (e: any) => {
     setDraggableState({
@@ -43,6 +63,7 @@ function Node({ x, y, fill, isDraggingSetter }: any) {
         screenX: 0,
         screenY: 0,
       });
+      setPosAndSave(draggableState.posX, draggableState.posY);
     }
   };
 
@@ -104,7 +125,9 @@ function Node({ x, y, fill, isDraggingSetter }: any) {
           />
         </svg>
       </div>
-      {isEditing && <ColorPicker selectedColor={color} callback={setColor} />}
+      {isEditing && (
+        <ColorPicker selectedColor={color} callback={setColorAndSave} />
+      )}
     </div>
   );
 }

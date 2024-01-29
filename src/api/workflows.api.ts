@@ -18,3 +18,11 @@ export const getWorkflows = async (): Promise<WorkflowsI> => {
   const response = await fetch(process.env.REACT_APP_API_URL + "/data");
   return await response.json();
 };
+
+export const saveWorkflow = async (workflow: WorkflowI) => {
+  fetch(process.env.REACT_APP_API_URL + "/data", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(workflow),
+  });
+};
