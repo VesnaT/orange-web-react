@@ -20,6 +20,7 @@ export default function Canvas({ workflowID }: any) {
     setWorkflow(data["workflows"].find((w: WorkflowI) => w.id === wID));
   };
   useEffect(() => {
+    setWorkflow(undefined);
     fetchWorkflow(workflowID);
   }, [workflowID]);
 
