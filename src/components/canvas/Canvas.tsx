@@ -1,14 +1,25 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Node from "../node/Node";
 import { COLORS } from "../../utils/colors";
 import { RADIUS } from "../node/Node";
 import { getName, NodeI, WorkflowI } from "../../api/workflows.api";
 import useWorkflow from "./useWorkflow";
+import { socket } from "../../socket";
 
 export default function Canvas({ workflowID }: any) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const { workflow, setAndSaveWorkflow } = useWorkflow(workflowID);
+  const { workflow, setAndSaveWorkflow, setWorkflow } = useWorkflow(workflowID);
+
+  useEffect(() => {
+    function onUpdate(value: WorkflowI) {
+      setWorkflow(value);
+    }
+    socket.on("update", onUpdate);
+    return () => {
+      socket.off("update", onUpdate);
+    };
+  }, [setWorkflow]);
 
   const addNode = async (x: number, y: number) => {
     if (!workflow) {
@@ -66,7 +77,7 @@ export default function Canvas({ workflowID }: any) {
       <div className="canvas" ref={canvasRef} onMouseUp={handleMouseUp}>
         {workflow.nodes.map((node: NodeI) => (
           <Node
-            key={node.id}
+            key={node.id + node.name + node.fill + node.x + node.y}
             workflowID={workflowID}
             id={node.id}
             x={node.x}

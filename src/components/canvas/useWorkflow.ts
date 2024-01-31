@@ -18,5 +18,5 @@ export default function useWorkflow(workflowID: string) {
     saveWorkflow(updatedWorkflow);
   };
 
-  return { workflow, setAndSaveWorkflow };
+  return { workflow, setAndSaveWorkflow, setWorkflow };
 }
