@@ -1,41 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import ColorPicker from "./ColorPicker";
-import { getName } from "../api/workflows.api";
+import ColorPicker from "../ColorPicker";
+import { Name } from "./Name";
+import { EditButton } from "./EditButton";
 export const RADIUS = 56;
 
-function Name({ workflowID, name, callback }: any) {
-  const fetchName = async (): Promise<any> => {
-    const data = await getName(workflowID);
-    return data["name"];
-  };
-
-  const clickHandler = async () => {
-    const newName: Promise<string> = await fetchName();
-    callback(newName);
-  };
-
-  return (
-    <text
-      x="50%"
-      y="100%"
-      textAnchor="middle"
-      style={{
-        cursor: "pointer",
-      }}
-      onClick={(e) => {
-        clickHandler();
-        e.stopPropagation();
-      }}
-      onMouseUp={(e) => {
-        e.stopPropagation();
-      }}
-    >
-      {name}
-    </text>
-  );
-}
-
-function Node({
+export const Node = ({
   workflowID,
   id,
   x,
@@ -44,7 +13,7 @@ function Node({
   name,
   isDraggingSetter,
   callback,
-}: any) {
+}: any) => {
   const [color, setColor] = useState(fill);
   const [text, setText] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
@@ -97,6 +66,7 @@ function Node({
     });
     isDraggingSetter(true);
   };
+
   const handleMouseMove = (e: any) => {
     if (draggableState.isDown) {
       const shiftX = e.screenX - draggableState.screenX;
@@ -110,7 +80,8 @@ function Node({
       });
     }
   };
-  const handleMouseUp = (e: any) => {
+
+  const handleMouseUp = () => {
     if (draggableState.isDown) {
       setDraggableState({
         ...draggableState,
@@ -122,8 +93,8 @@ function Node({
     }
   };
 
-  const escFunction = useCallback((event: any) => {
-    if (event.key === "Escape") {
+  const escFunction = useCallback((e: any) => {
+    if (e.key === "Escape") {
       setIsEditing(false);
     }
   }, []);
@@ -168,22 +139,7 @@ function Node({
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
           />
-          <rect
-            style={{
-              cursor: "pointer",
-            }}
-            y="3"
-            x="3"
-            width="13"
-            height="13"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsEditing(true);
-            }}
-            onMouseUp={(e) => {
-              e.stopPropagation();
-            }}
-          />
+          <EditButton callback={setIsEditing} />
           <Name workflowID={workflowID} name={text} callback={setTextAndSave} />
         </svg>
       </div>
@@ -192,6 +148,6 @@ function Node({
       )}
     </div>
   );
-}
+};
 
 export default Node;

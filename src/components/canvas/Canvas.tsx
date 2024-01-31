@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import Node from "../Node";
+import Node from "../node/Node";
 import { COLORS } from "../../utils/colors";
-import { RADIUS } from "../Node";
+import { RADIUS } from "../node/Node";
 import { getName, NodeI, WorkflowI } from "../../api/workflows.api";
 import useWorkflow from "./useWorkflow";
 
