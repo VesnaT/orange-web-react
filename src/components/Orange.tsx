@@ -1,4 +1,4 @@
-import Canvas from "./Canvas";
+import Canvas from "./canvas/Canvas";
 import { useParams } from "react-router-dom";
 
 export default function Orange() {

@@ -1,34 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
-import Node from "./Node";
-import { COLORS } from "../utils/colors";
-import { RADIUS } from "./Node";
-import {
-  getWorkflows,
-  saveWorkflow,
-  getName,
-  NodeI,
-  WorkflowI,
-} from "../api/workflows.api";
+import React, { useRef, useState } from "react";
+import Node from "../Node";
+import { COLORS } from "../../utils/colors";
+import { RADIUS } from "../Node";
+import { getName, NodeI, WorkflowI } from "../../api/workflows.api";
+import useWorkflow from "./useWorkflow";
 
 export default function Canvas({ workflowID }: any) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [workflow, setWorkflow] = useState<undefined | WorkflowI>(undefined);
-
-  const fetchWorkflow = async (wID: string) => {
-    const data = await getWorkflows();
-    setWorkflow(data["workflows"].find((w: WorkflowI) => w.id === wID));
-  };
-  useEffect(() => {
-    setWorkflow(undefined);
-    fetchWorkflow(workflowID);
-  }, [workflowID]);
-
-  if (!workflow) {
-    return <div>Workflow not found</div>;
-  }
+  const { workflow, setAndSaveWorkflow } = useWorkflow(workflowID);
 
   const addNode = async (x: number, y: number) => {
+    if (!workflow) {
+      return;
+    }
     const nodeName = await getName(workflowID);
     const addedNodeWorkflow: WorkflowI = {
       ...workflow,
@@ -47,6 +32,9 @@ export default function Canvas({ workflowID }: any) {
   };
 
   const updateNode = ({ id, x, y, fill, name }: NodeI) => {
+    if (!workflow) {
+      return;
+    }
     const updatedNodeWorkflow: WorkflowI = {
       ...workflow,
     };
@@ -59,11 +47,6 @@ export default function Canvas({ workflowID }: any) {
     setAndSaveWorkflow(updatedNodeWorkflow);
   };
 
-  const setAndSaveWorkflow = (updatedWorkflow: WorkflowI) => {
-    setWorkflow(updatedWorkflow);
-    saveWorkflow(updatedWorkflow);
-  };
-
   const handleMouseUp = (event: React.MouseEvent<any, MouseEvent>) => {
     if (isDragging) {
       setIsDragging(false);
@@ -74,6 +57,10 @@ export default function Canvas({ workflowID }: any) {
     setIsDragging(false);
     addNode(event.clientX - rect.x - RADIUS, event.clientY - rect.y - RADIUS);
   };
+
+  if (!workflow) {
+    return <div>Workflow not found</div>;
+  }
   return (
     <div>
       <div className="canvas" ref={canvasRef} onMouseUp={handleMouseUp}>
