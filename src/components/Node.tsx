@@ -1,9 +1,52 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
+import { getName } from "../api/workflows.api";
 export const RADIUS = 56;
 
-function Node({ id, x, y, fill, isDraggingSetter, callback }: any) {
+function Name({ workflowID, name, callback }: any) {
+  const fetchName = async (): Promise<any> => {
+    const data = await getName(workflowID);
+    return data["name"];
+  };
+
+  const clickHandler = async () => {
+    const newName: Promise<string> = await fetchName();
+    callback(newName);
+  };
+
+  return (
+    <text
+      x="50%"
+      y="100%"
+      textAnchor="middle"
+      style={{
+        cursor: "pointer",
+      }}
+      onClick={(e) => {
+        clickHandler();
+        e.stopPropagation();
+      }}
+      onMouseUp={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      {name}
+    </text>
+  );
+}
+
+function Node({
+  workflowID,
+  id,
+  x,
+  y,
+  fill,
+  name,
+  isDraggingSetter,
+  callback,
+}: any) {
   const [color, setColor] = useState(fill);
+  const [text, setText] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const [draggableState, setDraggableState] = useState({
     isDown: false,
@@ -19,6 +62,7 @@ function Node({ id, x, y, fill, isDraggingSetter, callback }: any) {
       x: draggableState.posX,
       y: draggableState.posY,
       fill: color_,
+      name: text,
     });
     setColor(color_);
   };
@@ -29,8 +73,19 @@ function Node({ id, x, y, fill, isDraggingSetter, callback }: any) {
       x: x_,
       y: y_,
       fill: color,
+      name: text,
     });
-    setColor(color);
+  };
+
+  const setTextAndSave = (text_: string) => {
+    callback({
+      id: id,
+      x: x,
+      y: y,
+      fill: color,
+      name: text_,
+    });
+    setText(text_);
   };
 
   const handleMouseDown = (e: any) => {
@@ -84,14 +139,20 @@ function Node({ id, x, y, fill, isDraggingSetter, callback }: any) {
     <div>
       <div>
         <svg
-          viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2}`}
+          viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2 + 20}`}
           xmlns="http://www.w3.org/2000/svg"
           width={RADIUS * 2}
-          height={RADIUS * 2}
+          height={RADIUS * 2 + 30}
           style={{
             position: "absolute",
             left: draggableState.posX,
             top: draggableState.posY,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          onMouseUp={(e) => {
+            e.stopPropagation();
           }}
         >
           <circle
@@ -123,6 +184,7 @@ function Node({ id, x, y, fill, isDraggingSetter, callback }: any) {
               e.stopPropagation();
             }}
           />
+          <Name workflowID={workflowID} name={text} callback={setTextAndSave} />
         </svg>
       </div>
       {isEditing && (

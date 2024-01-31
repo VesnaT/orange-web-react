@@ -5,6 +5,7 @@ import { RADIUS } from "./Node";
 import {
   getWorkflows,
   saveWorkflow,
+  getName,
   NodeI,
   WorkflowI,
 } from "../api/workflows.api";
@@ -26,7 +27,8 @@ export default function Canvas({ workflowID }: any) {
     return <div>Workflow not found</div>;
   }
 
-  const addNode = (x: number, y: number) => {
+  const addNode = async (x: number, y: number) => {
+    const nodeName = await getName(workflowID);
     const addedNodeWorkflow: WorkflowI = {
       ...workflow,
       nodes: [
@@ -36,19 +38,20 @@ export default function Canvas({ workflowID }: any) {
           x: x,
           y: y,
           fill: COLORS[workflow.nodes.length % COLORS.length],
+          name: nodeName["name"],
         },
       ],
     };
     setAndSaveWorkflow(addedNodeWorkflow);
   };
 
-  const updateNode = ({ id, x, y, fill }: NodeI) => {
+  const updateNode = ({ id, x, y, fill, name }: NodeI) => {
     const updatedNodeWorkflow: WorkflowI = {
       ...workflow,
     };
     updatedNodeWorkflow.nodes = updatedNodeWorkflow.nodes.map((node: NodeI) => {
       if (node.id === id) {
-        return { id, x, y, fill };
+        return { id, x, y, fill, name };
       }
       return node;
     });
@@ -76,10 +79,12 @@ export default function Canvas({ workflowID }: any) {
         {workflow.nodes.map((node: NodeI) => (
           <Node
             key={node.id}
+            workflowID={workflowID}
             id={node.id}
             x={node.x}
             y={node.y}
             fill={node.fill}
+            name={node.name}
             isDraggingSetter={setIsDragging}
             callback={updateNode}
           />
