@@ -85,7 +85,7 @@ export default function Canvas({ workflowID }: any) {
 
     const rect = canvasRef.current!.getBoundingClientRect();
     setDraggingNode(null);
-    addNode(event.clientX - rect.x - RADIUS, event.clientY - rect.y - RADIUS);
+    addNode(event.clientX - rect.x, event.clientY - rect.y);
   };
 
   if (!workflow) {

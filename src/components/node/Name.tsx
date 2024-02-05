@@ -15,7 +15,7 @@ export const Name = ({ workflowID, name, callback }: any) => {
   return (
     <text
       x="50%"
-      y="100%"
+      y="95%"
       textAnchor="middle"
       style={{
         cursor: "pointer",

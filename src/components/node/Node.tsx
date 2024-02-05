@@ -53,14 +53,14 @@ export const Node = ({
   return (
     <div>
       <svg
-        viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2 + 20}`}
+        viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2 + 30}`}
         xmlns="http://www.w3.org/2000/svg"
-        width={RADIUS * 2}
+        width={RADIUS * 2 + 18 * 2}
         height={RADIUS * 2 + 30}
         style={{
           position: "absolute",
-          left: x,
-          top: y,
+          left: x - RADIUS - 18,
+          top: y - RADIUS,
         }}
       >
         <circle
@@ -84,12 +84,24 @@ export const Node = ({
             });
           }}
           onMouseUp={(e) => {
+            e.stopPropagation();
             if (eX !== null && eY !== null) {
               if (eX === e.clientX && eY === e.clientY) {
                 setIsEditing(true);
               }
             }
+            setDraggingNode(null);
           }}
+        />
+        <path
+          className="widget-ear"
+          d="M 100 5 C 130 30, 130 80, 100 107"
+          fill="transparent"
+        />
+        <path
+          className="widget-ear"
+          d="M 12 5 C -18 30, -18 80, 12 107"
+          fill="transparent"
         />
         <Name workflowID={workflowID} name={name} callback={setText} />
       </svg>
