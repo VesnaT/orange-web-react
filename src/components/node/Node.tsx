@@ -91,7 +91,6 @@ export const Node = ({
             }
           }}
         />
-        {/*<EditButton callback={setIsEditing} />*/}
         <Name workflowID={workflowID} name={name} callback={setText} />
       </svg>
       {isEditing && <ColorPicker selectedColor={fill} callback={setColor} />}

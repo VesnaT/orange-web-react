@@ -19,6 +19,7 @@ export const Name = ({ workflowID, name, callback }: any) => {
       textAnchor="middle"
       style={{
         cursor: "pointer",
+        userSelect: "none",
       }}
       onClick={(e) => {
         clickHandler();
