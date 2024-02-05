@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "../ColorPicker";
 import { Name } from "./Name";
-import { EditButton } from "./EditButton";
 export const RADIUS = 56;
 
 export const Node = ({
@@ -11,6 +10,8 @@ export const Node = ({
   y,
   fill,
   name,
+  eX,
+  eY,
   callback,
   setDraggingNode,
 }: any) => {
@@ -72,10 +73,25 @@ export const Node = ({
           fill={fill}
           onMouseDown={(e) => {
             e.stopPropagation();
-            setDraggingNode({ id, x, y, fill, name });
+            setDraggingNode({
+              id,
+              x,
+              y,
+              fill,
+              name,
+              eX: e.clientX,
+              eY: e.clientY,
+            });
+          }}
+          onMouseUp={(e) => {
+            if (eX !== null && eY !== null) {
+              if (eX === e.clientX && eY === e.clientY) {
+                setIsEditing(true);
+              }
+            }
           }}
         />
-        <EditButton callback={setIsEditing} />
+        {/*<EditButton callback={setIsEditing} />*/}
         <Name workflowID={workflowID} name={name} callback={setText} />
       </svg>
       {isEditing && <ColorPicker selectedColor={fill} callback={setColor} />}

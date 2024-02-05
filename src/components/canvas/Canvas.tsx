@@ -109,6 +109,8 @@ export default function Canvas({ workflowID }: any) {
             y={node.y}
             fill={node.fill}
             name={node.name}
+            eX={draggingNode?.eX}
+            eY={draggingNode?.eY}
             callback={updateNode}
             setDraggingNode={setDraggingNode}
           />
