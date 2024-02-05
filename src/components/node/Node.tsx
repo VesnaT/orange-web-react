@@ -11,86 +11,29 @@ export const Node = ({
   y,
   fill,
   name,
-  isDraggingSetter,
   callback,
+  setDraggingNode,
 }: any) => {
-  const [color, setColor] = useState(fill);
-  const [text, setText] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
-  const [draggableState, setDraggableState] = useState({
-    isDown: false,
-    posX: x,
-    posY: y,
-    screenX: 0,
-    screenY: 0,
-  });
 
-  const setColorAndSave = (color_: string) => {
-    callback({
-      id: id,
-      x: draggableState.posX,
-      y: draggableState.posY,
-      fill: color_,
-      name: text,
-    });
-    setColor(color_);
-  };
-
-  const setPosAndSave = (x_: number, y_: number) => {
-    callback({
-      id: id,
-      x: x_,
-      y: y_,
-      fill: color,
-      name: text,
-    });
-  };
-
-  const setTextAndSave = (text_: string) => {
+  const setColor = (color_: string) => {
     callback({
       id: id,
       x: x,
       y: y,
-      fill: color,
+      fill: color_,
+      name: name,
+    });
+  };
+
+  const setText = (text_: string) => {
+    callback({
+      id: id,
+      x: x,
+      y: y,
+      fill: fill,
       name: text_,
     });
-    setText(text_);
-  };
-
-  const handleMouseDown = (e: any) => {
-    setDraggableState({
-      ...draggableState,
-      isDown: true,
-      screenX: e.screenX,
-      screenY: e.screenY,
-    });
-    isDraggingSetter(true);
-  };
-
-  const handleMouseMove = (e: any) => {
-    if (draggableState.isDown) {
-      const shiftX = e.screenX - draggableState.screenX;
-      const shiftY = e.screenY - draggableState.screenY;
-      setDraggableState({
-        ...draggableState,
-        posX: draggableState.posX + shiftX,
-        posY: draggableState.posY + shiftY,
-        screenX: e.screenX,
-        screenY: e.screenY,
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (draggableState.isDown) {
-      setDraggableState({
-        ...draggableState,
-        isDown: false,
-        screenX: 0,
-        screenY: 0,
-      });
-      setPosAndSave(draggableState.posX, draggableState.posY);
-    }
   };
 
   const escFunction = useCallback((e: any) => {
@@ -108,44 +51,34 @@ export const Node = ({
 
   return (
     <div>
-      <div>
-        <svg
-          viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2 + 20}`}
-          xmlns="http://www.w3.org/2000/svg"
-          width={RADIUS * 2}
-          height={RADIUS * 2 + 30}
+      <svg
+        viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2 + 20}`}
+        xmlns="http://www.w3.org/2000/svg"
+        width={RADIUS * 2}
+        height={RADIUS * 2 + 30}
+        style={{
+          position: "absolute",
+          left: x,
+          top: y,
+        }}
+      >
+        <circle
           style={{
-            position: "absolute",
-            left: draggableState.posX,
-            top: draggableState.posY,
+            cursor: "grab",
           }}
-          onClick={(e) => {
+          cx={RADIUS}
+          cy={RADIUS}
+          r={RADIUS}
+          fill={fill}
+          onMouseDown={(e) => {
             e.stopPropagation();
+            setDraggingNode({ id, x, y, fill, name });
           }}
-          onMouseUp={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <circle
-            style={{
-              cursor: "move",
-            }}
-            cx={RADIUS}
-            cy={RADIUS}
-            r={RADIUS}
-            fill={color}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          />
-          <EditButton callback={setIsEditing} />
-          <Name workflowID={workflowID} name={text} callback={setTextAndSave} />
-        </svg>
-      </div>
-      {isEditing && (
-        <ColorPicker selectedColor={color} callback={setColorAndSave} />
-      )}
+        />
+        <EditButton callback={setIsEditing} />
+        <Name workflowID={workflowID} name={name} callback={setText} />
+      </svg>
+      {isEditing && <ColorPicker selectedColor={fill} callback={setColor} />}
     </div>
   );
 };

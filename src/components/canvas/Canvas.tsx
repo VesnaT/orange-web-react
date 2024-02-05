@@ -8,7 +8,7 @@ import { socket } from "../../socket";
 
 export default function Canvas({ workflowID }: any) {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [draggingNode, setDraggingNode] = useState<any>(null);
   const { workflow, setAndSaveWorkflow, setWorkflow } = useWorkflow(workflowID);
 
   useEffect(() => {
@@ -58,14 +58,33 @@ export default function Canvas({ workflowID }: any) {
     setAndSaveWorkflow(updatedNodeWorkflow);
   };
 
+  const handleMouseMove = (event: React.MouseEvent<any, MouseEvent>) => {
+    if (draggingNode) {
+      const { id, x, y, fill, name, eX, eY } = draggingNode;
+      const deltaX = event.clientX - eX;
+      const deltaY = event.clientY - eY;
+      updateNode({
+        id,
+        x: x + deltaX,
+        y: y + deltaY,
+        fill,
+        name,
+      });
+    }
+  };
+
+  const handleMouseDown = (event: React.MouseEvent<any, MouseEvent>) => {
+    setDraggingNode(null);
+  };
+
   const handleMouseUp = (event: React.MouseEvent<any, MouseEvent>) => {
-    if (isDragging) {
-      setIsDragging(false);
+    if (draggingNode) {
+      setDraggingNode(null);
       return;
     }
 
     const rect = canvasRef.current!.getBoundingClientRect();
-    setIsDragging(false);
+    setDraggingNode(null);
     addNode(event.clientX - rect.x - RADIUS, event.clientY - rect.y - RADIUS);
   };
 
@@ -74,7 +93,13 @@ export default function Canvas({ workflowID }: any) {
   }
   return (
     <div>
-      <div className="canvas" ref={canvasRef} onMouseUp={handleMouseUp}>
+      <div
+        className="canvas"
+        ref={canvasRef}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+      >
         {workflow.nodes.map((node: NodeI) => (
           <Node
             key={node.id + node.name + node.fill + node.x + node.y}
@@ -84,8 +109,8 @@ export default function Canvas({ workflowID }: any) {
             y={node.y}
             fill={node.fill}
             name={node.name}
-            isDraggingSetter={setIsDragging}
             callback={updateNode}
+            setDraggingNode={setDraggingNode}
           />
         ))}
       </div>
