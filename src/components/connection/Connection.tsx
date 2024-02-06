@@ -1,5 +1,7 @@
+import { OFFSET, RADIUS } from "../node/Node";
+
 export const Connection = ({ x1, y1, x2, y2 }: any) => {
-  const offset = 56 + 9;
+  const offset = RADIUS + OFFSET / 2;
 
   let x = Math.min(x1, x2) + offset;
   let width = Math.abs(x1 - x2) - 2 * offset;

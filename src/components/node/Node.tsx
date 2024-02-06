@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "../ColorPicker";
 import { Name } from "./Name";
+import { LeftEar, RightEar } from "./Ear";
+import { Circle } from "./Circle";
 export const RADIUS = 56;
 export const OFFSET = Math.floor(RADIUS / 3);
 
@@ -38,6 +40,45 @@ export const Node = ({
     });
   };
 
+  const leftEarMouseUp = (e: any) => {
+    e.stopPropagation();
+    connectNode(id);
+    console.log("leftEarMouseUp", id);
+  };
+
+  const rightEarMouseDown = (e: any) => {
+    e.stopPropagation();
+    setConnectingNode(id);
+    console.log("rightEarMouseDown", id);
+  };
+
+  const circleMouseDown = (e: any) => {
+    if (e.button === 2) {
+      e.stopPropagation();
+      return;
+    }
+    e.stopPropagation();
+    setDraggingNode({
+      id,
+      x,
+      y,
+      fill,
+      name,
+      eX: e.clientX,
+      eY: e.clientY,
+    });
+  };
+
+  const circleMouseUp = (e: any) => {
+    e.stopPropagation();
+    if (eX !== null && eY !== null) {
+      if (eX === e.clientX && eY === e.clientY) {
+        setIsEditing(true);
+      }
+    }
+    setDraggingNode(null);
+  };
+
   const escFunction = useCallback((e: any) => {
     if (e.key === "Escape") {
       setIsEditing(false);
@@ -64,58 +105,13 @@ export const Node = ({
           top: y - RADIUS,
         }}
       >
-        <circle
-          style={{
-            cursor: "grab",
-          }}
-          cx={RADIUS}
-          cy={RADIUS}
-          r={RADIUS}
+        <LeftEar onMouseUp={leftEarMouseUp} />
+        <Circle
           fill={fill}
-          onMouseDown={(e) => {
-            if (e.button === 2) {
-              e.stopPropagation();
-              return;
-            }
-            e.stopPropagation();
-            setDraggingNode({
-              id,
-              x,
-              y,
-              fill,
-              name,
-              eX: e.clientX,
-              eY: e.clientY,
-            });
-          }}
-          onMouseUp={(e) => {
-            e.stopPropagation();
-            if (eX !== null && eY !== null) {
-              if (eX === e.clientX && eY === e.clientY) {
-                setIsEditing(true);
-              }
-            }
-            setDraggingNode(null);
-          }}
+          onMouseDown={circleMouseDown}
+          onMouseUp={circleMouseUp}
         />
-        <path
-          className="widget-ear"
-          d={`M ${RADIUS * 2 - Math.round(RADIUS / 5)} ${Math.round(RADIUS / 11)} C ${RADIUS * 2 + OFFSET} ${Math.round(RADIUS / 2)}, ${RADIUS * 2 + OFFSET} ${RADIUS * 2 - Math.round(RADIUS / 2)}, ${RADIUS * 2 - Math.round(RADIUS / 5)}  ${RADIUS * 2 - Math.round(RADIUS / 11)}`}
-          fill="transparent"
-          onMouseDown={(e) => {
-            e.stopPropagation();
-            setConnectingNode(id);
-          }}
-        />
-        <path
-          className="widget-ear"
-          d={`M ${Math.round(RADIUS / 5)} ${Math.round(RADIUS / 11)} C -${OFFSET} ${Math.round(RADIUS / 2)}, -${OFFSET} ${RADIUS * 2 - Math.round(RADIUS / 2)}, ${Math.round(RADIUS / 5)} ${RADIUS * 2 - Math.round(RADIUS / 11)}`}
-          fill="transparent"
-          onMouseUp={(e) => {
-            e.stopPropagation();
-            connectNode(id);
-          }}
-        />
+        <RightEar onMouseDown={rightEarMouseDown} />
         <Name workflowID={workflowID} name={name} callback={setText} />
       </svg>
       {isEditing && <ColorPicker selectedColor={fill} callback={setColor} />}
