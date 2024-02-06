@@ -14,6 +14,9 @@ export default function Canvas({ workflowID }: any) {
 
   useEffect(() => {
     function onUpdate(value: WorkflowI) {
+      if (value.id !== workflowID) {
+        return;
+      }
       setWorkflow(value);
     }
     socket.on("update", onUpdate);
