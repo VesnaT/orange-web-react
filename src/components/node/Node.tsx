@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import ColorPicker from "../ColorPicker";
 import { Name } from "./Name";
 export const RADIUS = 56;
+export const OFFSET = Math.floor(RADIUS / 3);
 
 export const Node = ({
   workflowID,
@@ -55,11 +56,11 @@ export const Node = ({
       <svg
         viewBox={`0 0 ${RADIUS * 2} ${RADIUS * 2 + 30}`}
         xmlns="http://www.w3.org/2000/svg"
-        width={RADIUS * 2 + 18 * 2}
+        width={RADIUS * 2 + OFFSET * 2}
         height={RADIUS * 2 + 30}
         style={{
           position: "absolute",
-          left: x - RADIUS - 18,
+          left: x - RADIUS - OFFSET,
           top: y - RADIUS,
         }}
       >
@@ -72,6 +73,10 @@ export const Node = ({
           r={RADIUS}
           fill={fill}
           onMouseDown={(e) => {
+            if (e.button === 2) {
+              e.stopPropagation();
+              return;
+            }
             e.stopPropagation();
             setDraggingNode({
               id,
@@ -95,13 +100,21 @@ export const Node = ({
         />
         <path
           className="widget-ear"
-          d="M 100 5 C 130 30, 130 80, 100 107"
+          d={`M ${RADIUS * 2 - Math.round(RADIUS / 5)} ${Math.round(RADIUS / 11)} C ${RADIUS * 2 + OFFSET} ${Math.round(RADIUS / 2)}, ${RADIUS * 2 + OFFSET} ${RADIUS * 2 - Math.round(RADIUS / 2)}, ${RADIUS * 2 - Math.round(RADIUS / 5)}  ${RADIUS * 2 - Math.round(RADIUS / 11)}`}
           fill="transparent"
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            setConnectingNode(id);
+          }}
         />
         <path
           className="widget-ear"
-          d="M 12 5 C -18 30, -18 80, 12 107"
+          d={`M ${Math.round(RADIUS / 5)} ${Math.round(RADIUS / 11)} C -${OFFSET} ${Math.round(RADIUS / 2)}, -${OFFSET} ${RADIUS * 2 - Math.round(RADIUS / 2)}, ${Math.round(RADIUS / 5)} ${RADIUS * 2 - Math.round(RADIUS / 11)}`}
           fill="transparent"
+          onMouseUp={(e) => {
+            e.stopPropagation();
+            connectNode(id);
+          }}
         />
         <Name workflowID={workflowID} name={name} callback={setText} />
       </svg>

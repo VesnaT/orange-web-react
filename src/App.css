@@ -80,3 +80,21 @@ nav a {
   height: 32px;
   margin: 1px;
 }
+
+.widget-ear {
+  stroke: transparent;
+  stroke-linecap: round;
+  stroke-width: 20;
+}
+
+.widget-ear {
+  stroke: black;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.widget-ear:hover {
+  stroke: black;
+  stroke-linecap: round;
+  stroke-width: 5;
+}

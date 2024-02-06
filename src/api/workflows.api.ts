@@ -4,6 +4,7 @@ export interface NodeI {
   y: number;
   fill: string;
   name: string;
+  connections: Array<number>;
 }
 
 export interface WorkflowI {
