@@ -25,11 +25,13 @@ export const getWorkflows = async (): Promise<WorkflowsI> => {
   return await response.json();
 };
 
-export const saveWorkflow = async (workflow: WorkflowI) => {
+export const saveWorkflow = async (workflow: WorkflowI, sessionID: string) => {
+  const workflowWithSessionID: any = workflow;
+  workflowWithSessionID.sessionID = sessionID;
   fetch(process.env.REACT_APP_API_URL + "/data", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(workflow),
+    body: JSON.stringify(workflowWithSessionID),
   });
 };
 

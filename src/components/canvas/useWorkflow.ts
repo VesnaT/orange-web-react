@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getWorkflows, saveWorkflow, WorkflowI } from "../../api/workflows.api";
 
-export default function useWorkflow(workflowID: string) {
+export default function useWorkflow(workflowID: string, sessionID: string) {
   const [workflow, setWorkflow] = useState<undefined | WorkflowI>(undefined);
 
   const fetchWorkflow = async (wID: string) => {
@@ -15,8 +15,8 @@ export default function useWorkflow(workflowID: string) {
 
   const setAndSaveWorkflow = (updatedWorkflow: WorkflowI) => {
     setWorkflow(updatedWorkflow);
-    saveWorkflow(updatedWorkflow);
+    saveWorkflow(updatedWorkflow, sessionID);
   };
 
-  return { workflow, setAndSaveWorkflow, setWorkflow };
+  return { workflow, setAndSaveWorkflow, setWorkflow, fetchWorkflow };
 }

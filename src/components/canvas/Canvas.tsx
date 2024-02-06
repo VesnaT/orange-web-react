@@ -6,24 +6,37 @@ import useWorkflow from "./useWorkflow";
 import { socket } from "../../socket";
 import { Connection } from "../connection/Connection";
 
+interface UpdatedWorkflowI {
+  workflowID: string;
+  sessionID: string;
+}
+
 export default function Canvas({ workflowID }: any) {
+  const [sessionID, setSessionID] = useState<string>(
+    Math.random().toString().substring(2),
+  );
+  console.log("Canvas", workflowID, sessionID);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [draggingNode, setDraggingNode] = useState<any>(null);
   const [connectingNode, setConnectingNode] = useState<any>(null);
-  const { workflow, setAndSaveWorkflow, setWorkflow } = useWorkflow(workflowID);
+  const { workflow, setAndSaveWorkflow, setWorkflow, fetchWorkflow } =
+    useWorkflow(workflowID, sessionID);
 
   useEffect(() => {
-    function onUpdate(value: WorkflowI) {
-      if (value.id !== workflowID) {
+    function onUpdated(updated: UpdatedWorkflowI) {
+      if (
+        updated.workflowID !== workflowID ||
+        updated.sessionID === sessionID
+      ) {
         return;
       }
-      setWorkflow(value);
+      fetchWorkflow(workflowID);
     }
-    socket.on("update", onUpdate);
+    socket.on("updated", onUpdated);
     return () => {
-      socket.off("update", onUpdate);
+      socket.off("updated", onUpdated);
     };
-  }, [setWorkflow]);
+  }, [workflowID, setWorkflow]);
 
   const addNode = async (x: number, y: number) => {
     if (!workflow) {

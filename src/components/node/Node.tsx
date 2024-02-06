@@ -45,13 +45,11 @@ export const Node = ({
   const leftEarMouseUp = (e: any) => {
     e.stopPropagation();
     connectNode(id);
-    console.log("leftEarMouseUp", id);
   };
 
   const rightEarMouseDown = (e: any) => {
     e.stopPropagation();
     setConnectingNode(id);
-    console.log("rightEarMouseDown", id);
   };
 
   const circleMouseDown = (e: any) => {
