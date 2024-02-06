@@ -61,7 +61,26 @@ export default function Canvas({ workflowID }: any) {
   };
 
   const connectNode = (id: number) => {
-    //console.log("connectNode", connectingNode, id);
+    if (!workflow || connectingNode === null) {
+      return;
+    }
+    const updatedNodeWorkflow: WorkflowI = {
+      ...workflow,
+    };
+    updatedNodeWorkflow.nodes = updatedNodeWorkflow.nodes.map((node: NodeI) => {
+      if (node.id === connectingNode) {
+        return {
+          id: node.id,
+          x: node.x,
+          y: node.y,
+          fill: node.fill,
+          name: node.name,
+          connections: [...node.connections, id],
+        };
+      }
+      return node;
+    });
+    setAndSaveWorkflow(updatedNodeWorkflow);
   };
 
   const handleMouseMove = (event: React.MouseEvent<any, MouseEvent>) => {
@@ -76,16 +95,18 @@ export default function Canvas({ workflowID }: any) {
         y: y + deltaY,
         fill,
         name,
+        connections: node?.connections || [],
       });
     }
   };
 
   const handleMouseDown = (event: React.MouseEvent<any, MouseEvent>) => {
     setDraggingNode(null);
+    setConnectingNode(null);
   };
 
   const handleMouseUp = (event: React.MouseEvent<any, MouseEvent>) => {
-    if (draggingNode) {
+    if (draggingNode || connectingNode) {
       setDraggingNode(null);
       return;
     }
@@ -111,7 +132,14 @@ export default function Canvas({ workflowID }: any) {
           return (
             <div>
               <Node
-                key={node.id + node.name + node.fill + node.x + node.y}
+                key={
+                  node.id +
+                  node.name +
+                  node.fill +
+                  node.x +
+                  node.y +
+                  node.connections
+                }
                 workflowID={workflowID}
                 id={node.id}
                 x={node.x}
@@ -135,12 +163,13 @@ export default function Canvas({ workflowID }: any) {
                 return (
                   <Connection
                     key={
-                      id.toString() +
                       node.id +
                       node.name +
                       node.fill +
                       node.x +
-                      node.y
+                      node.y +
+                      node.connections +
+                      id
                     }
                     x1={node.x}
                     y1={node.y}

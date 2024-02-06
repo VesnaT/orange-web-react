@@ -17,6 +17,8 @@ export const Node = ({
   eY,
   callback,
   setDraggingNode,
+  setConnectingNode,
+  connectNode,
 }: any) => {
   const [isEditing, setIsEditing] = useState(false);
 
